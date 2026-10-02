@@ -3,120 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Frases Glass</title>
-    <!-- Tailwind CSS para estilizar rápido -->
+    <title>Generador de Notificaciones X (iOS Style)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Estilo Glassmorphism para las tarjetas de tweets */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+        /* Estilo base para el fondo de pantalla general de la web */
+        body {
+            background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1964&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* Estilo Glassmorphic específico para la notificación de iOS */
+        .ios-notification {
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.3);
         }
     </style>
 </head>
-<body id="cuerpo" class="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 text-white p-4 md:p-8 transition-colors duration-500" style="background-size: cover; background-position: center;">
+<body class="min-h-screen text-white p-4 md:p-8 flex flex-col items-center">
 
-    <div class="max-w-4xl mx-auto">
-        <!-- Título -->
-        <header class="text-center mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold tracking-tight">✨ Pensamientos en Glass</h1>
-            <p class="text-gray-300 text-sm mt-1">Escribe tus frases con estética de notificación iOS</p>
+    <div class="max-w-xl w-full">
+        <!-- Título de la App web -->
+        <header class="text-center mb-6">
+            <h1 class="text-2xl font-bold tracking-tight text-white/90 drop-shadow">Generador de Notis X</h1>
+            <p class="text-gray-200 text-xs mt-1 drop-shadow">Estética de notificación flotante iOS</p>
         </header>
 
-        <!-- Panel de Creación / Formulario -->
-        <div class="glass-card rounded-2xl p-6 mb-10">
-            <h2 class="text-lg font-semibold mb-4 text-white/90">Nuevo Pensamiento</h2>
+        <!-- Panel de Control para crear la tarjeta -->
+        <div class="bg-black/40 backdrop-blur-md rounded-2xl p-5 mb-8 border border-white/10 shadow-xl">
+            <h2 class="text-sm font-semibold mb-3 text-white/80 uppercase tracking-wider">Crear Notificación</h2>
             <form id="tweetForm" class="space-y-4">
                 <div>
-                    <label class="block text-xs uppercase tracking-wider text-gray-300 mb-1">Tu Frase</label>
-                    <textarea id="textoFrase" rows="3" required placeholder="¿Qué estás pensando hoy...?" 
-                        class="w-full bg-black/30 border border-white/20 rounded-xl p-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400 resize-none"></textarea>
+                    <label class="block text-xs text-gray-300 mb-1">Frase / Pensamiento</label>
+                    <textarea id="textoFrase" rows="3" required placeholder="Escribe lo que quieras que diga la notificación..." 
+                        class="w-full bg-black/50 border border-white/20 rounded-xl p-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"></textarea>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Selector de color de fondo -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Color de la tarjeta (Glass tint) -->
                     <div>
-                        <label class="block text-xs uppercase tracking-wider text-gray-300 mb-1">Color de Fondo General</label>
+                        <label class="block text-xs text-gray-300 mb-1">Color de Fondo de la Tarjeta</label>
                         <div class="flex items-center gap-2">
-                            <input type="color" id="colorFondo" value="#1e1b4b" class="w-10 h-10 rounded-lg bg-transparent cursor-pointer border border-white/20">
-                            <span class="text-xs text-gray-300">Elige un tono base</span>
+                            <input type="color" id="colorTarjeta" value="#2d2d2d" class="w-9 h-9 rounded-lg bg-transparent cursor-pointer border border-white/20">
+                            <span class="text-xs text-gray-300">Tono traslúcido</span>
                         </div>
                     </div>
 
-                    <!-- URL de Imagen (Imgur, etc) -->
+                    <!-- Fondo de pantalla general de la página (Imgur URL) -->
                     <div>
-                        <label class="block text-xs uppercase tracking-wider text-gray-300 mb-1">Fondo de Imagen (Opcional - URL Imgur)</label>
-                        <input type="url" id="urlImagen" placeholder="https://i.imgur.com/tu-imagen.jpg" 
-                            class="w-full bg-black/30 border border-white/20 rounded-xl p-2.5 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400">
+                        <label class="block text-xs text-gray-300 mb-1">Fondo de Pantalla (URL Imagen/Imgur)</label>
+                        <input type="url" id="urlFondo" placeholder="https://i.imgur.com/..." 
+                            class="w-full bg-black/50 border border-white/20 rounded-xl p-2.5 text-xs text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400">
                     </div>
                 </div>
 
-                <button type="submit" class="w-full bg-white/20 hover:bg-white/30 border border-white/30 font-medium py-2.5 rounded-xl transition duration-200">
-                    Publicar Pensamiento
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 font-medium py-2.5 rounded-xl transition duration-200 text-sm shadow-lg shadow-blue-600/30">
+                    Generar Notificación
                 </button>
             </form>
         </div>
 
-        <!-- Contenedor donde se van listando las tarjetas -->
-        <div id="contenedorTweets" class="space-y-4">
-            <!-- Aquí se inyectan dinámicamente las tarjetas estilo notificación iOS -->
+        <!-- Vista previa / Contenedor de las tarjetas generadas -->
+        <div id="contenedorTweets" class="space-y-4 w-full flex flex-col items-center">
+            <!-- Aquí se inyectan las tarjetas -->
         </div>
     </div>
 
     <script>
         const form = document.getElementById('tweetForm');
-        const cuerpo = document.getElementById('cuerpo');
-        const colorFondoInput = document.getElementById('colorFondo');
-        const urlImagenInput = document.getElementById('urlImagen');
+        const colorTarjetaInput = document.getElementById('colorTarjeta');
+        const urlFondoInput = document.getElementById('urlFondo');
         const contenedorTweets = document.getElementById('contenedorTweets');
 
-        // Cambiar color de fondo general en tiempo real
-        colorFondoInput.addEventListener('input', (e) => {
-            cuerpo.style.background = e.target.value;
-        });
-
-        urlImagenInput.addEventListener('input', (e) => {
+        // Cambiar la imagen de fondo de toda la página mediante Imgur/URL
+        urlFondoInput.addEventListener('input', (e) => {
             if(e.target.value.trim() !== '') {
-                cuerpo.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${e.target.value}')`;
-            } else {
-                cuerpo.style.backgroundImage = 'none';
-                cuerpo.style.background = colorFondoInput.value;
+                document.body.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${e.target.value}')`;
             }
         });
 
-        // Guardar y cargar tweets usando localStorage para que no se borren al recargar
-        let tweets = JSON.parse(localStorage.getItem('glass_tweets')) || [];
+        // Cargar tweets guardados
+        let tweets = JSON.parse(localStorage.getItem('ios_tweets')) || [];
+
+        function hexToRgba(hex, alpha) {
+            let c = hex.substring(1);
+            let rgb = parseInt(c, 16);
+            let r = (rgb >> 16) & 255;
+            let g = (rgb >> 8) & 255;
+            let b = (rgb >> 0) & 255;
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
 
         function renderTweets() {
             contenedorTweets.innerHTML = '';
             if(tweets.length === 0) {
-                contenedorTweets.innerHTML = `<p class="text-center text-gray-400 text-sm py-6">No hay pensamientos todavía. ¡Escribe el primero!</p>`;
+                contenedorTweets.innerHTML = `<p class="text-center text-gray-300 text-xs py-4">No hay notificaciones creadas aún.</p>`;
                 return;
             }
 
-            tweets.forEach((tweet, index) => {
+            tweets.forEach((item, index) => {
                 const card = document.createElement('div');
-                card.className = "glass-card rounded-2xl p-4 md:p-5 relative transition transform hover:-translate-y-1";
+                card.className = "ios-notification rounded-3xl p-4 w-full max-w-md relative transition transform hover:scale-[1.01]";
                 
+                // Convertir el color elegido por el usuario a un formato con transparencia para lograr el efecto cristal tintado
+                const bgColor = hexToRgba(item.color || '#2d2d2d', 0.65);
+                card.style.backgroundColor = bgColor;
+
                 card.innerHTML = `
-                    <div class="flex items-start justify-between gap-3">
-                        <div class="flex items-center gap-3">
-                            <!-- Icono estilo notificación iOS -->
-                            <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold border border-white/30">
-                                💬
+                    <div class="flex items-start justify-between">
+                        <!-- Cabecera de notificación iOS con logo de X -->
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-6 h-6 rounded-lg bg-black flex items-center justify-center text-white font-black text-xs shadow">
+                                𝕏
                             </div>
-                            <div>
-                                <span class="text-xs font-semibold text-white/80 block">Notificación • Ahora</span>
-                                <span class="text-xs text-gray-300">Pensamiento</span>
-                            </div>
+                            <span class="text-xs font-medium text-white/90 tracking-wide">X</span>
+                            <span class="text-[11px] text-gray-300 ml-auto">ahora</span>
                         </div>
-                        <button onclick="eliminarTweet(${index})" class="text-white/40 hover:text-red-400 text-xs transition">✕</button>
+                        <button onclick="eliminarTweet(${index})" class="text-white/40 hover:text-red-400 text-xs transition ml-2">✕</button>
                     </div>
-                    <div class="mt-3 pl-11">
-                        <p class="text-white text-sm md:text-base leading-relaxed whitespace-pre-wrap">${escapeHtml(tweet.texto)}</p>
+
+                    <!-- Cuerpo del texto / Tweet -->
+                    <div class="mt-2.5 mb-3">
+                        <p class="text-white text-sm leading-relaxed whitespace-pre-wrap">${escapeHtml(item.texto)}</p>
+                    </div>
+
+                    <!-- Barra inferior estilo métricas de tweet (comentarios, rt, likes, vistas) -->
+                    <div class="flex items-center justify-between text-gray-300 text-[11px] pt-2 border-t border-white/10 px-1">
+                        <div class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5 fill-current opacity-70" viewBox="0 0 24 24"><path d="M1.751 10c0-4.418 3.582-8 8-8h3.5c4.418 0 8 3.582 8 8s-3.582 8-8 8H9.3l-4.755 3.566c-.464.348-1.11-.02-1.11-.59v-2.73C2.868 15.938 1.751 13.15 1.751 10z"></path></svg>
+                            <span>11</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5 fill-current opacity-70" viewBox="0 0 24 24"><path d="M4.5 3.88l4.432 4.14-1.364 1.46L5.5 7.55V15c0 1.1.9 2 2 2h7v2H7.5c-2.21 0-4-1.79-4-4V7.55l-2.068 1.93-1.364-1.46L4.5 3.88zM16.5 15V9h-7V7h7c2.21 0 4 1.79 4 4v4.45l2.068-1.93 1.364 1.46L19.5 20.12l-4.432-4.14 1.364-1.46L18.5 16.45z"></path></svg>
+                            <span>45</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5 fill-current opacity-70" viewBox="0 0 24 24"><path d="M12 21.638h-.014C9.403 21.59 1.95 14.856 1.95 8.47c0-3.064 2.225-5.55 5.037-5.55 1.745 0 3.405.883 4.383 2.25 1.011-1.397 2.67-2.25 4.403-2.25 2.81 0 5.037 2.486 5.037 5.55 0 6.386-7.453 13.12-10.037 13.168h-.013z"></path></svg>
+                            <span>556</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5 fill-current opacity-70" viewBox="0 0 24 24"><path d="M8.75 21V3h2v18h-2zM18 21V8.5h2V21h-2zM4 21v-6.5h2V21H4z"></path></svg>
+                            <span>12 mil</span>
+                        </div>
                     </div>
                 `;
                 contenedorTweets.appendChild(card);
@@ -126,9 +157,10 @@
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             const texto = document.getElementById('textoFrase').value;
+            const color = colorTarjetaInput.value;
             
-            tweets.unshift({ texto }); // Agregar al principio
-            localStorage.setItem('glass_tweets', JSON.stringify(tweets));
+            tweets.unshift({ texto, color });
+            localStorage.setItem('ios_tweets', JSON.stringify(tweets));
             
             document.getElementById('textoFrase').value = '';
             renderTweets();
@@ -136,7 +168,7 @@
 
         function eliminarTweet(index) {
             tweets.splice(index, 1);
-            localStorage.setItem('glass_tweets', JSON.stringify(tweets));
+            localStorage.setItem('ios_tweets', JSON.stringify(tweets));
             renderTweets();
         }
 
@@ -144,7 +176,6 @@
             return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
 
-        // Cargar al iniciar
         renderTweets();
     </script>
 </body>
