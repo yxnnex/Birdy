@@ -6,7 +6,6 @@
     <title>Generador de Notificaciones X (iOS Style)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Estilo base para el fondo de pantalla general de la web */
         body {
             background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1964&auto=format&fit=crop');
             background-size: cover;
@@ -14,7 +13,6 @@
             background-attachment: fixed;
         }
 
-        /* Estilo Glassmorphic específico para la notificación de iOS */
         .ios-notification {
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
@@ -34,7 +32,7 @@
 
         <!-- Panel de Control para crear la tarjeta -->
         <div class="bg-black/40 backdrop-blur-md rounded-2xl p-5 mb-8 border border-white/10 shadow-xl">
-            <h2 class="text-sm font-semibold mb-3 text-white/80 uppercase tracking-wider">Crear Notificación</h2>
+            <h2 class="text-sm font-semibold mb-3 text-white/80 uppercase tracking-wider">Crear Notificación Viral</h2>
             <form id="tweetForm" class="space-y-4">
                 <div>
                     <label class="block text-xs text-gray-300 mb-1">Frase / Pensamiento</label>
@@ -61,7 +59,7 @@
                 </div>
 
                 <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 font-medium py-2.5 rounded-xl transition duration-200 text-sm shadow-lg shadow-blue-600/30">
-                    Generar Notificación
+                    Publicar Notificación Viral
                 </button>
             </form>
         </div>
@@ -78,14 +76,12 @@
         const urlFondoInput = document.getElementById('urlFondo');
         const contenedorTweets = document.getElementById('contenedorTweets');
 
-        // Cambiar la imagen de fondo de toda la página mediante Imgur/URL
         urlFondoInput.addEventListener('input', (e) => {
             if(e.target.value.trim() !== '') {
                 document.body.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${e.target.value}')`;
             }
         });
 
-        // Cargar tweets guardados
         let tweets = JSON.parse(localStorage.getItem('ios_tweets')) || [];
 
         function hexToRgba(hex, alpha) {
@@ -97,6 +93,29 @@
             return `rgba(${r}, ${g}, ${b}, ${alpha})`;
         }
 
+        // Función para generar números aleatorios con aspecto viral
+        function generarEstadisticasVirales() {
+            const comentarios = Math.floor(Math.random() * 450) + 15;
+            const rts = Math.floor(Math.random() * 2500) + 80;
+            const likes = Math.floor(Math.random() * 35000) + 1200;
+            const vistasNum = Math.floor(Math.random() * 450) + 15;
+            
+            // Formatear likes y rts si pasan de 1000 (ej: 1.2 mil)
+            const formatNum = (num) => {
+                if (num >= 1000) {
+                    return (num / 1000).toFixed(1).replace('.0', '') + ' mil';
+                }
+                return num.toString();
+            };
+
+            return {
+                comentarios: formatNum(comentarios),
+                rts: formatNum(rts),
+                likes: formatNum(likes),
+                vistas: `${vistasNum} mil`
+            };
+        }
+
         function renderTweets() {
             contenedorTweets.innerHTML = '';
             if(tweets.length === 0) {
@@ -105,16 +124,19 @@
             }
 
             tweets.forEach((item, index) => {
+                // Si el tweet viejo no tiene stats guardadas, se las creamos
+                if (!item.stats) {
+                    item.stats = generarEstadisticasVirales();
+                }
+
                 const card = document.createElement('div');
                 card.className = "ios-notification rounded-3xl p-4 w-full max-w-md relative transition transform hover:scale-[1.01]";
                 
-                // Convertir el color elegido por el usuario a un formato con transparencia para lograr el efecto cristal tintado
                 const bgColor = hexToRgba(item.color || '#2d2d2d', 0.65);
                 card.style.backgroundColor = bgColor;
 
                 card.innerHTML = `
                     <div class="flex items-start justify-between">
-                        <!-- Cabecera de notificación iOS con logo de X -->
                         <div class="flex items-center gap-2.5">
                             <div class="w-6 h-6 rounded-lg bg-black flex items-center justify-center text-white font-black text-xs shadow">
                                 𝕏
@@ -125,28 +147,26 @@
                         <button onclick="eliminarTweet(${index})" class="text-white/40 hover:text-red-400 text-xs transition ml-2">✕</button>
                     </div>
 
-                    <!-- Cuerpo del texto / Tweet -->
                     <div class="mt-2.5 mb-3">
                         <p class="text-white text-sm leading-relaxed whitespace-pre-wrap">${escapeHtml(item.texto)}</p>
                     </div>
 
-                    <!-- Barra inferior estilo métricas de tweet (comentarios, rt, likes, vistas) -->
                     <div class="flex items-center justify-between text-gray-300 text-[11px] pt-2 border-t border-white/10 px-1">
                         <div class="flex items-center gap-1">
                             <svg class="w-3.5 h-3.5 fill-current opacity-70" viewBox="0 0 24 24"><path d="M1.751 10c0-4.418 3.582-8 8-8h3.5c4.418 0 8 3.582 8 8s-3.582 8-8 8H9.3l-4.755 3.566c-.464.348-1.11-.02-1.11-.59v-2.73C2.868 15.938 1.751 13.15 1.751 10z"></path></svg>
-                            <span>11</span>
+                            <span>${item.stats.comentarios}</span>
                         </div>
                         <div class="flex items-center gap-1">
                             <svg class="w-3.5 h-3.5 fill-current opacity-70" viewBox="0 0 24 24"><path d="M4.5 3.88l4.432 4.14-1.364 1.46L5.5 7.55V15c0 1.1.9 2 2 2h7v2H7.5c-2.21 0-4-1.79-4-4V7.55l-2.068 1.93-1.364-1.46L4.5 3.88zM16.5 15V9h-7V7h7c2.21 0 4 1.79 4 4v4.45l2.068-1.93 1.364 1.46L19.5 20.12l-4.432-4.14 1.364-1.46L18.5 16.45z"></path></svg>
-                            <span>45</span>
+                            <span>${item.stats.rts}</span>
                         </div>
                         <div class="flex items-center gap-1">
                             <svg class="w-3.5 h-3.5 fill-current opacity-70" viewBox="0 0 24 24"><path d="M12 21.638h-.014C9.403 21.59 1.95 14.856 1.95 8.47c0-3.064 2.225-5.55 5.037-5.55 1.745 0 3.405.883 4.383 2.25 1.011-1.397 2.67-2.25 4.403-2.25 2.81 0 5.037 2.486 5.037 5.55 0 6.386-7.453 13.12-10.037 13.168h-.013z"></path></svg>
-                            <span>556</span>
+                            <span>${item.stats.likes}</span>
                         </div>
                         <div class="flex items-center gap-1">
                             <svg class="w-3.5 h-3.5 fill-current opacity-70" viewBox="0 0 24 24"><path d="M8.75 21V3h2v18h-2zM18 21V8.5h2V21h-2zM4 21v-6.5h2V21H4z"></path></svg>
-                            <span>12 mil</span>
+                            <span>${item.stats.vistas}</span>
                         </div>
                     </div>
                 `;
@@ -158,8 +178,9 @@
             e.preventDefault();
             const texto = document.getElementById('textoFrase').value;
             const color = colorTarjetaInput.value;
+            const stats = generarEstadisticasVirales(); // Genera métricas nuevas al enviar
             
-            tweets.unshift({ texto, color });
+            tweets.unshift({ texto, color, stats });
             localStorage.setItem('ios_tweets', JSON.stringify(tweets));
             
             document.getElementById('textoFrase').value = '';
