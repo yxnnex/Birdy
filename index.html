@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi cabeza suena a:</title>
+    <title>)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Fondo general de la página web (neutro y oscuro) */
         body {
             background-color: #0f172a;
         }
 
-        /* Estilo Glassmorphic base para la notificación de iOS */
         .ios-notification {
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -20,6 +18,12 @@
             background-size: cover;
             background-position: center;
         }
+
+        /* Solución definitiva para palabras extremadamente largas */
+        .texto-frase {
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
     </style>
 </head>
 <body class="min-h-screen text-white p-4 md:p-8 flex flex-col items-center">
@@ -27,16 +31,16 @@
     <div class="max-w-xl w-full">
         <!-- Título de la App web -->
         <header class="text-center mb-6">
-            <h1 class="text-2xl font-bold tracking-tight text-white/90 drop-shadow"> YONE IDEAS</h1>
-            <p class="text-gray-400 text-xs mt-1">Mis mas lucidos pensamientos.</p>
+            <h1 class="text-2xl font-bold tracking-tight text-white/90 drop-shadow"></h1>
+            <p class="text-gray-400 text-xs mt-1"></p>
         </header>
 
         <!-- Panel de Control para crear la tarjeta -->
         <div class="bg-gray-900/80 backdrop-blur-md rounded-2xl p-5 mb-8 border border-white/10 shadow-xl">
-            <h2 class="text-sm font-semibold mb-3 text-white/80 uppercase tracking-wider">Crear idea con Imagen</h2>
+            <h2 class="text-sm font-semibold mb-3 text-white/80 uppercase tracking-wider">Crear Notificación con Imagen</h2>
             <form id="tweetForm" class="space-y-4">
                 <div>
-                    <label class="block text-xs text-gray-300 mb-1">Frase</label>
+                    <label class="block text-xs text-gray-300 mb-1">Frase / Pensamiento</label>
                     <textarea id="textoFrase" rows="3" required placeholder="Escribe lo que quieras que diga la notificación..." 
                         class="w-full bg-black/50 border border-white/20 rounded-xl p-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"></textarea>
                 </div>
@@ -88,7 +92,6 @@
             return `rgba(${r}, ${g}, ${b}, ${alpha})`;
         }
 
-        // Generador de estadísticas con formato viral
         function generarEstadisticasVirales() {
             const comentarios = Math.floor(Math.random() * 450) + 15;
             const rts = Math.floor(Math.random() * 2500) + 80;
@@ -125,7 +128,6 @@
                 const card = document.createElement('div');
                 card.className = "ios-notification rounded-3xl p-4 w-full max-w-md relative transition transform hover:scale-[1.01]";
                 
-                // Si el usuario puso una URL de imagen, la aplicamos de fondo con una capa oscura encima para que el texto resalte.
                 if (item.imagen && item.imagen.trim() !== "") {
                     card.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url('${item.imagen}')`;
                 } else {
@@ -146,7 +148,8 @@
                     </div>
 
                     <div class="mt-2.5 mb-3">
-                        <p class="text-white text-sm leading-relaxed whitespace-pre-wrap font-medium">${escapeHtml(item.texto)}</p>
+                        <!-- Se añadió la clase 'texto-frase' para forzar el quiebre de palabras largas -->
+                        <p class="text-white text-sm leading-relaxed whitespace-pre-wrap font-medium texto-frase">${escapeHtml(item.texto)}</p>
                     </div>
 
                     <div class="flex items-center justify-between text-gray-300 text-[11px] pt-2 border-t border-white/10 px-1">
