@@ -6,18 +6,19 @@
     <title>Generador de Notificaciones X (iOS Style)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* Fondo general de la página web (neutro y oscuro) */
         body {
-            background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1964&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background-color: #0f172a;
         }
 
+        /* Estilo Glassmorphic base para la notificación de iOS */
         .ios-notification {
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.5);
+            background-size: cover;
+            background-position: center;
         }
     </style>
 </head>
@@ -27,12 +28,12 @@
         <!-- Título de la App web -->
         <header class="text-center mb-6">
             <h1 class="text-2xl font-bold tracking-tight text-white/90 drop-shadow">Generador de Notis X</h1>
-            <p class="text-gray-200 text-xs mt-1 drop-shadow">Estética de notificación flotante iOS</p>
+            <p class="text-gray-400 text-xs mt-1">Notificaciones con imagen dentro de la burbuja estilo iOS</p>
         </header>
 
         <!-- Panel de Control para crear la tarjeta -->
-        <div class="bg-black/40 backdrop-blur-md rounded-2xl p-5 mb-8 border border-white/10 shadow-xl">
-            <h2 class="text-sm font-semibold mb-3 text-white/80 uppercase tracking-wider">Crear Notificación Viral</h2>
+        <div class="bg-gray-900/80 backdrop-blur-md rounded-2xl p-5 mb-8 border border-white/10 shadow-xl">
+            <h2 class="text-sm font-semibold mb-3 text-white/80 uppercase tracking-wider">Crear Notificación con Imagen</h2>
             <form id="tweetForm" class="space-y-4">
                 <div>
                     <label class="block text-xs text-gray-300 mb-1">Frase / Pensamiento</label>
@@ -41,25 +42,25 @@
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <!-- Color de la tarjeta (Glass tint) -->
+                    <!-- Color de respaldo si no hay imagen -->
                     <div>
-                        <label class="block text-xs text-gray-300 mb-1">Color de Fondo de la Tarjeta</label>
+                        <label class="block text-xs text-gray-300 mb-1">Color Base (si no usas imagen)</label>
                         <div class="flex items-center gap-2">
                             <input type="color" id="colorTarjeta" value="#2d2d2d" class="w-9 h-9 rounded-lg bg-transparent cursor-pointer border border-white/20">
-                            <span class="text-xs text-gray-300">Tono traslúcido</span>
+                            <span class="text-xs text-gray-300">Tono de respaldo</span>
                         </div>
                     </div>
 
-                    <!-- Fondo de pantalla general de la página (Imgur URL) -->
+                    <!-- URL de la imagen que irá DENTRO de la burbuja -->
                     <div>
-                        <label class="block text-xs text-gray-300 mb-1">Fondo de Pantalla (URL Imagen/Imgur)</label>
-                        <input type="url" id="urlFondo" placeholder="https://i.imgur.com/..." 
+                        <label class="block text-xs text-gray-300 mb-1">Imagen de Fondo (URL Imgur / Web)</label>
+                        <input type="url" id="urlImagenBurbuja" placeholder="https://i.imgur.com/..." 
                             class="w-full bg-black/50 border border-white/20 rounded-xl p-2.5 text-xs text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400">
                     </div>
                 </div>
 
                 <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 font-medium py-2.5 rounded-xl transition duration-200 text-sm shadow-lg shadow-blue-600/30">
-                    Publicar Notificación Viral
+                    Publicar Notificación
                 </button>
             </form>
         </div>
@@ -73,16 +74,10 @@
     <script>
         const form = document.getElementById('tweetForm');
         const colorTarjetaInput = document.getElementById('colorTarjeta');
-        const urlFondoInput = document.getElementById('urlFondo');
+        const urlImagenBurbujaInput = document.getElementById('urlImagenBurbuja');
         const contenedorTweets = document.getElementById('contenedorTweets');
 
-        urlFondoInput.addEventListener('input', (e) => {
-            if(e.target.value.trim() !== '') {
-                document.body.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${e.target.value}')`;
-            }
-        });
-
-        let tweets = JSON.parse(localStorage.getItem('ios_tweets')) || [];
+        let tweets = JSON.parse(localStorage.getItem('ios_tweets_img')) || [];
 
         function hexToRgba(hex, alpha) {
             let c = hex.substring(1);
@@ -93,14 +88,13 @@
             return `rgba(${r}, ${g}, ${b}, ${alpha})`;
         }
 
-        // Función para generar números aleatorios con aspecto viral
+        // Generador de estadísticas con formato viral
         function generarEstadisticasVirales() {
             const comentarios = Math.floor(Math.random() * 450) + 15;
             const rts = Math.floor(Math.random() * 2500) + 80;
             const likes = Math.floor(Math.random() * 35000) + 1200;
             const vistasNum = Math.floor(Math.random() * 450) + 15;
             
-            // Formatear likes y rts si pasan de 1000 (ej: 1.2 mil)
             const formatNum = (num) => {
                 if (num >= 1000) {
                     return (num / 1000).toFixed(1).replace('.0', '') + ' mil';
@@ -119,12 +113,11 @@
         function renderTweets() {
             contenedorTweets.innerHTML = '';
             if(tweets.length === 0) {
-                contenedorTweets.innerHTML = `<p class="text-center text-gray-300 text-xs py-4">No hay notificaciones creadas aún.</p>`;
+                contenedorTweets.innerHTML = `<p class="text-center text-gray-500 text-xs py-4">No hay notificaciones creadas aún.</p>`;
                 return;
             }
 
             tweets.forEach((item, index) => {
-                // Si el tweet viejo no tiene stats guardadas, se las creamos
                 if (!item.stats) {
                     item.stats = generarEstadisticasVirales();
                 }
@@ -132,8 +125,13 @@
                 const card = document.createElement('div');
                 card.className = "ios-notification rounded-3xl p-4 w-full max-w-md relative transition transform hover:scale-[1.01]";
                 
-                const bgColor = hexToRgba(item.color || '#2d2d2d', 0.65);
-                card.style.backgroundColor = bgColor;
+                // Si el usuario puso una URL de imagen, la aplicamos de fondo con una capa oscura encima para que el texto resalte.
+                if (item.imagen && item.imagen.trim() !== "") {
+                    card.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url('${item.imagen}')`;
+                } else {
+                    card.style.backgroundImage = 'none';
+                    card.style.backgroundColor = hexToRgba(item.color || '#2d2d2d', 0.85);
+                }
 
                 card.innerHTML = `
                     <div class="flex items-start justify-between">
@@ -148,7 +146,7 @@
                     </div>
 
                     <div class="mt-2.5 mb-3">
-                        <p class="text-white text-sm leading-relaxed whitespace-pre-wrap">${escapeHtml(item.texto)}</p>
+                        <p class="text-white text-sm leading-relaxed whitespace-pre-wrap font-medium">${escapeHtml(item.texto)}</p>
                     </div>
 
                     <div class="flex items-center justify-between text-gray-300 text-[11px] pt-2 border-t border-white/10 px-1">
@@ -178,18 +176,20 @@
             e.preventDefault();
             const texto = document.getElementById('textoFrase').value;
             const color = colorTarjetaInput.value;
-            const stats = generarEstadisticasVirales(); // Genera métricas nuevas al enviar
+            const imagen = urlImagenBurbujaInput.value;
+            const stats = generarEstadisticasVirales();
             
-            tweets.unshift({ texto, color, stats });
-            localStorage.setItem('ios_tweets', JSON.stringify(tweets));
+            tweets.unshift({ texto, color, imagen, stats });
+            localStorage.setItem('ios_tweets_img', JSON.stringify(tweets));
             
             document.getElementById('textoFrase').value = '';
+            document.getElementById('urlImagenBurbuja').value = '';
             renderTweets();
         });
 
         function eliminarTweet(index) {
             tweets.splice(index, 1);
-            localStorage.setItem('ios_tweets', JSON.stringify(tweets));
+            localStorage.setItem('ios_tweets_img', JSON.stringify(tweets));
             renderTweets();
         }
 
